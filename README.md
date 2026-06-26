@@ -2,7 +2,7 @@
 
 Este repositorio contiene el diseño y desarrollo de la capa completa de interfaz gráfica de usuario (GUI) y frontend para la plataforma financiera **InvestAI**. El sistema combina investigación aplicada sobre plataformas de IA Generativa y programación asistida por IA para generar código funcional que asiste en decisiones cuantitativas de inversión.
 
-Trabajo desarrollado para el laboratorio de la **Semana 10** del curso **Introducción al Desarrollo de Software (iDeSo)**.
+Trabajo desarrollado para el laboratorio de la **Semana 10** dl curso **Introducción al Desarrollo de Software (iDeSo)**.
 
 ## Institución
 * **Universidad**: Universidad Nacional Mayor de San Marcos (UNMSM)
