@@ -5,25 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ideso - Sistema Central de Trading & Modelos Predictivos</title>
     <style>
-/* __INVESTAI_NAV_CSS__ */
-    body { display: block !important; align-items: unset !important; justify-content: unset !important; padding-top: 0 !important; }
-    .investai-navbar { background-color: #112244 !important; color: white !important; display: flex !important; align-items: center !important; padding: 0 20px !important; height: 56px !important; box-shadow: 0 2px 16px rgba(0,0,0,.18) !important; position: sticky !important; top: 0 !important; z-index: 9999 !important; box-sizing: border-box !important; width: 100% !important; overflow: hidden !important; flex-direction: column !important; justify-content: flex-start !important; padding-bottom: 0 !important; }
-    .investai-brand { display: flex !important; align-items: center !important; font-weight: bold !important; font-size: 16px !important; margin-right: 24px !important; color: white !important; text-decoration: none !important; flex-shrink: 0 !important; white-space: nowrap !important; }
-    .investai-brand-icon { color: #ffcc00 !important; margin-right: 8px !important; font-weight: 900 !important; }
-    .investai-nav-row { display: flex !important; align-items: center !important; width: 100% !important; height: 46px !important; flex-shrink: 0 !important; }
-    .investai-nav-links { display: flex !important; gap: 6px !important; overflow-x: auto !important; overflow-y: hidden !important; white-space: nowrap !important; height: 40px !important; align-items: center !important; flex: 1 1 0% !important; min-width: 0 !important; -webkit-overflow-scrolling: touch !important; cursor: grab !important;
-      scrollbar-width: thin !important;
-      scrollbar-color: rgba(255,255,255,0.35) transparent !important;
-    }
-    .investai-nav-links::-webkit-scrollbar { display: block !important; height: 3px !important; }
-    .investai-nav-links::-webkit-scrollbar-track { background: transparent !important; }
-    .investai-nav-links::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.35) !important; border-radius: 99px !important; }
-    .investai-nav-links::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.6) !important; }
-    .investai-nav-links a { color: rgba(255, 255, 255, 0.65) !important; text-decoration: none !important; padding: 6px 12px !important; border-radius: 6px !important; font-size: 13px !important; font-weight: 500 !important; transition: background 0.2s ease, color 0.2s ease !important; flex-shrink: 0 !important; cursor: pointer !important; display: inline-block !important; }
-    .investai-nav-links a:hover { color: white !important; background-color: rgba(255, 255, 255, 0.10) !important; }
-    .investai-nav-links a.active-tab { background-color: #ffcc00 !important; color: #112244 !important; font-weight: 700 !important; }
-/* __INVESTAI_NAV_CSS__ */
-
         :root {
             --bg-color: #0d1117;
             --card-bg: #161b22;
@@ -90,7 +71,7 @@
             color: var(--accent-color);
             font-size: 16px;
             font-weight: 600;
-            margin-0 0 6px 0;
+            margin: 0 0 6px 0;
         }
 
         .card-desc {
@@ -110,24 +91,6 @@
     </style>
 </head>
 <body>
-<nav class="investai-navbar">
-    <a href="modulo6.6-core-predictivo-central.html" class="investai-brand">
-        <span class="investai-brand-icon">|||</span> InvestAI
-    </a>
-    <div class="investai-nav-links">
-        <a href="modulo6.1-autenticacion.html" id="nav-m1" data-mod="m1" onclick="navigateModule('m1', event)">Autenticación (M1)</a>
-        <a href="modulo6.2-mercado.html" id="nav-m2" data-mod="m2" onclick="navigateModule('m2', event)">Ingesta de Datos (M2)</a>
-        <a href="modulo6.3-svc.html" id="nav-m3" data-mod="m3" onclick="navigateModule('m3', event)">Predicciones SVC (M3)</a>
-        <a href="modulo6.4-lstm.html" id="nav-m4" data-mod="m4" onclick="navigateModule('m4', event)">Pronósticos LSTM (M4)</a>
-        <a href="modulo6.5-nlp-operaciones.html" id="nav-m5" data-mod="m5" onclick="navigateModule('m5', event)">Análisis NLP (M5)</a>
-        <a href="modulo6.6-core-predictivo-central.html" id="nav-m6" data-mod="m6" onclick="navigateModule('m6', event)" class="active-tab">Core Predictivo (M6)</a>
-        <a href="modulo6.7-estrategias.html" id="nav-m7" data-mod="m7" onclick="navigateModule('m7', event)">Estrategias (M7)</a>
-        <a href="modulo6.8-ordenes.html" id="nav-m8" data-mod="m8" onclick="navigateModule('m8', event)">Órdenes (M8)</a>
-        <a href="modulo6.9-portafolio.html" id="nav-m9" data-mod="m9" onclick="navigateModule('m9', event)">Portafolios (M9)</a>
-        <a href="modulo6.10-consola.html" id="nav-m10" data-mod="m10" onclick="navigateModule('m10', event)">Consola (M10)</a>
-        <a href="modulo6.11-backtesting.html" id="nav-m11" data-mod="m11" onclick="navigateModule('m11', event)">Backtesting (M11)</a>
-    </div>
-</nav>
 
     <header>
         <h1>Plataforma de Simulación y Análisis Cuantitativo</h1>
@@ -143,6 +106,16 @@
         <a href="modulo6.2-mercado.html" class="card">
             <div class="card-title">Módulo 6.2: Datos de Mercado</div>
             <p class="card-desc">Suscripción a WebSockets y flujos de datos en tiempo real.</p>
+        </a>
+
+        <a href="modulo6.3-svc.html" class="card">
+            <div class="card-title">Módulo 6.3: Predicciones SVC</div>
+            <p class="card-desc">Clasificación de patrones de mercado mediante Support Vector Classifier.</p>
+        </a>
+
+        <a href="modulo6.4-lstm.html" class="card">
+            <div class="card-title">Módulo 6.4: Pronósticos LSTM</div>
+            <p class="card-desc">Estimación de precios objetivos con redes neuronales recurrentes LSTM.</p>
         </a>
 
         <a href="modulo6.5-nlp-operaciones.html" class="card">
@@ -185,55 +158,5 @@
         <p>Ideso Enterprise — Entorno de Desarrollo Cuantitativo</p>
     </footer>
 
-<script>
-/* __INVESTAI_NAV_JS__ */
-    (function(){
-      const slider = document.querySelector('.investai-nav-links');
-      if(slider){
-        let isDown=false, startX, scrollLeft, moved=false;
-        slider.addEventListener('mousedown', e=>{ isDown=true; moved=false; startX=e.pageX-slider.offsetLeft; scrollLeft=slider.scrollLeft; slider.style.cursor='grabbing'; });
-        slider.addEventListener('mouseleave', ()=>{ isDown=false; slider.style.cursor='grab'; });
-        slider.addEventListener('mouseup', ()=>{ isDown=false; slider.style.cursor='grab'; });
-        slider.addEventListener('mousemove', e=>{ if(!isDown) return; e.preventDefault(); moved=true; const x=e.pageX-slider.offsetLeft; slider.scrollLeft=scrollLeft-(x-startX)*1.5; });
-        slider.addEventListener('click', e=>{ if(moved){ e.preventDefault(); e.stopPropagation(); moved=false; } }, true);
-      }
-      if(typeof window.navigateModule!=='undefined') return;
-      const cfg={
-        m1:{title:"Autenticación (M1)",desc:"Gestión de seguridad, tokens JWT y control de acceso MFA.",icon:"🔐"},
-        m2:{title:"Ingesta de Datos (M2)",desc:"Pipelines de captura y streaming desde APIs financieras.",icon:"📥"},
-        m3:{title:"Predicciones SVC (M3)",desc:"Etiquetado de patrones de mercado mediante algoritmos supervisados.",icon:"🏷️"},
-        m4:{title:"Pronósticos LSTM (M4)",desc:"Modelos para estimación de precios objetivos.",icon:"📊"},
-        m5:{title:"Análisis NLP (M5)",desc:"Procesamiento de Lenguaje Natural sobre noticias financieras.",icon:"💬"},
-        m6:{title:"Core Predictivo (M6)",desc:"Núcleo central de IA que coordina todos los módulos.",icon:"🧠"},
-        m7:{title:"Estrategias (M7)",desc:"Generación algorítmica de reglas operativas.",icon:"💡"},
-        m8:{title:"Órdenes (M8)",desc:"Enrutador inteligente con control estricto de Slippage.",icon:"⚡"},
-        m9:{title:"Portafolios (M9)",desc:"Rebalanceo automático mediante optimización de varianza media.",icon:"💼"},
-        m10:{title:"Consola (M10)",desc:"Panel de administración para control de umbrales operativos.",icon:"🖥️"},
-        m11:{title:"Backtesting (M11)",desc:"Simulador sobre series históricas con métricas Sharpe y Sortino.",icon:"⏳"}
-      };
-      window.navigateModule=function(id,e){
-        const link=document.getElementById('nav-'+id); if(!link) return;
-        const url=link.getAttribute('href');
-        if(!url||url==='#'){e.preventDefault();window.showPlaceholderView(id);return;}
-        e.preventDefault();
-        fetch(url,{method:'HEAD'}).then(r=>r.ok?window.location.href=url:window.showPlaceholderView(id)).catch(()=>window.location.href=url);
-      };
-      window.showPlaceholderView=function(id){
-        const c=cfg[id]; if(!c) return;
-        document.querySelectorAll('.view-section').forEach(s=>s.classList.remove('active-view'));
-        const ph=document.getElementById('view-placeholder');
-        if(ph){
-          const keys=['placeholder-title','placeholder-panel-title','placeholder-desc','placeholder-icon'];
-          const vals=[c.title,c.title+' en Desarrollo',c.desc,c.icon];
-          keys.forEach((k,i)=>{ const el=document.getElementById(k); if(el) el.innerText=vals[i]; });
-          ph.classList.add('active-view');
-        }
-        document.querySelectorAll('.investai-nav-links a').forEach(a=>a.classList.remove('active-tab'));
-        const al=document.getElementById('nav-'+id); if(al) al.classList.add('active-tab');
-      };
-      window.resetToCore=function(){window.location.href='modulo6.6-core-predictivo-central.html';};
-    })();
-/* __INVESTAI_NAV_JS__ */
-</script>
 </body>
 </html>
