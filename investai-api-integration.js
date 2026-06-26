@@ -16,7 +16,7 @@
 // ⚙️  CONFIGURACIÓN GLOBAL — ACTUALIZAR AQUÍ TRAS CADA REINICIO
 // ============================================================
 
-const API_BASE_URL = "https://TU-URL-DE-NGROK.ngrok-free.app"; // ← CAMBIAR ESTA LÍNEA
+const API_BASE_URL = "https://untrue-sniff-stash.ngrok-free.dev/"; // ← CAMBIAR ESTA LÍNEA
 
 // Cabecera requerida por Ngrok para evitar la pantalla de advertencia del browser
 const NGROK_HEADERS = {
