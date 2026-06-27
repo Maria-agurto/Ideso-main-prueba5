@@ -652,15 +652,15 @@ const CAPITAL_TOTAL = 250000;
 
 // Activos y pesos actuales del portafolio (suman 100%)
 let activos = [
-  { ticker:"AAPL", nombre:"Apple Inc.",      peso:30, color:"#1F3864" },
-  { ticker:"MSFT", nombre:"Microsoft Corp.", peso:25, color:"#2C4A7C" },
-  { ticker:"BTC",  nombre:"Bitcoin",         peso:15, color:"#C5961A" },
-  { ticker:"CASH", nombre:"Liquidez (Cash)", peso:30, color:"#9AA7B8" }
+  { ticker:"FSM",         nombre:"Fortuna Silver Mines Inc.",         peso:18, color:"#1F3864" },
+  { ticker:"VOLCABC1.LM", nombre:"Volcán Compañía Minera S.A.A.",     peso:12, color:"#2C4A7C" },
+  { ticker:"ABX.TO",      nombre:"Barrick Gold Corporation",          peso:20, color:"#C5961A" },
+  { ticker:"BVN",         nombre:"Cía. de Minas Buenaventura S.A.A.", peso:15, color:"#6B8E9E" },
+  { ticker:"BHP",         nombre:"BHP Group Limited",                 peso:15, color:"#4A7C59" },
+  { ticker:"CASH",        nombre:"Liquidez (Cash)",                   peso:20, color:"#9AA7B8" }
 ];
 
-// Pesos óptimos objetivo (resultado teórico del modelo de Markowitz).
-// Se usan para calcular las órdenes de rebalanceo sugeridas.
-const pesosOptimos = { AAPL:24, MSFT:31, BTC:9, CASH:36 };
+const pesosOptimos = { "FSM":22, "VOLCABC1.LM":8, "ABX.TO":17, "BVN":19, "BHP":14, "CASH":20 };
 
 // Ratios de eficiencia del portafolio: valor actual y valor post-optimización
 let ratios = {
