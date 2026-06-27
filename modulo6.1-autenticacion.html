@@ -1083,6 +1083,7 @@
       const API_AUTH = "https://untrue-sniff-stash.ngrok-free.dev"; // misma URL de Ngrok
 
 async function validateLogin() {
+  console.log("✅ validateLogin NUEVA ejecutándose");
   const email = document.getElementById('login-email').value.trim();
   const pass  = document.getElementById('login-pass').value;
   let valid = true;
