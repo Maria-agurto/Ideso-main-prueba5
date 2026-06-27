@@ -944,13 +944,14 @@ function _renderLSTMRegresor(data) {
 document.addEventListener("DOMContentLoaded", async () => {
 
   // 1. Verificar salud del servidor en todas las páginas
-  await verificarSaludServidor();
-
+  
   // 2. Detectar página activa por nombre del archivo
   const pagina = window.location.pathname.split("/").pop();
   
   if (pagina.includes("modulo6.2-mercado")) return;
   
+  await verificarSaludServidor();
+
   // Helper: obtener ticker del <select> o usar el primero disponible
   function tickerActivo() {
     const sel = document.getElementById("ticker-select");
