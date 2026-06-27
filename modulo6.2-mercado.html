@@ -850,9 +850,63 @@
     }
 
     function forceSyncAll() {
+      const btn = document.querySelector('.btn-sync');
+      const apis = [
+        { key: 'yahoo', nombre: 'Yahoo Finance', base: 40 },
+        { key: 'cmc',   nombre: 'CoinMarketCap', base: 85 }
+      ];
+
+      // Evitar doble clic mientras sincroniza
+      btn.disabled = true;
+      btn.textContent = '↺ Sincronizando…';
+
       logToConsole('INFO', 'Forzando sincronización completa con los servidores de API...');
+
+      // Poner los puntos de estado en "sincronizando" (color ámbar)
+      apis.forEach(api => {
+        const dot = document.getElementById(`dot-${api.key}`);
+        if (dot) {
+          dot.classList.remove('connected', 'error');
+          dot.style.background = 'var(--warning)';
+          dot.style.boxShadow = '0 0 6px rgba(255,193,7,0.6)';
+        }
+      });
+
       setTimeout(() => {
+        apis.forEach(api => {
+      // Nueva latencia simulada (con algo de variación realista)
+          const nuevaLatencia = Math.max(8, Math.round(api.base + (Math.random() - 0.5) * 30));
+          const esError = Math.random() < 0.05; // 5% de probabilidad de fallo simulado
+
+          const dot = document.getElementById(`dot-${api.key}`);
+          const latEl = document.getElementById(`lat-${api.key}`);
+          const barEl = document.getElementById(`lat-bar-${api.key}`);
+          const widgetEl = document.getElementById(`api-${api.key}`);
+
+           if (esError) {
+            if (dot) { dot.classList.add('error'); dot.style.background = ''; dot.style.boxShadow = ''; }
+            if (widgetEl) widgetEl.classList.add('error');
+            if (latEl) latEl.textContent = '—';
+            if (barEl) { barEl.style.width = '0%'; barEl.style.background = 'var(--danger)'; }
+            logToConsole('ERROR', `Timeout al sincronizar con ${api.nombre}.`);
+           } else {
+            if (dot) { dot.classList.remove('error'); dot.classList.add('connected'); dot.style.background = ''; dot.style.boxShadow = ''; }
+            if (widgetEl) widgetEl.classList.remove('error');
+            if (latEl) latEl.textContent = nuevaLatencia;
+            if (barEl) {
+          // Barra inversamente proporcional a la latencia (más rápido = barra más llena)
+              const anchoPct = Math.max(10, Math.min(100, 100 - nuevaLatencia / 2));
+              barEl.style.width = `${anchoPct}%`;
+              barEl.style.background = nuevaLatencia < 100 ? 'var(--success)' : 'var(--warning)';
+            }
+            logToConsole('SUCCESS', `${api.nombre} sincronizado — latencia ${nuevaLatencia}ms.`);
+          }
+        });
+
         logToConsole('SUCCESS', 'Sincronización manual completada. Buffers limpios.');
+
+        btn.disabled = false;
+        btn.textContent = '↺ Sincronizar';
       }, 800);
     }
 
