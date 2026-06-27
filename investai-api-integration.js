@@ -948,7 +948,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // 2. Detectar página activa por nombre del archivo
   const pagina = window.location.pathname.split("/").pop();
-
+  
+  if (pagina.includes("modulo6.2-mercado")) return;
+  
   // Helper: obtener ticker del <select> o usar el primero disponible
   function tickerActivo() {
     const sel = document.getElementById("ticker-select");
