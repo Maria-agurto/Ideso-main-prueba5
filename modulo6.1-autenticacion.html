@@ -1080,61 +1080,70 @@
 
     /* --- VALIDACIÓN: INICIO DE SESIÓN --- */
     function validateLogin() {
-      const email = document.getElementById('login-email').value.trim();
-      const pass = document.getElementById('login-pass').value;
-      let valid = true;
+      const API_AUTH = "https://untrue-sniff-stash.ngrok-free.dev"; // misma URL de Ngrok
 
-      if (!email) {
-        showError('login-email', 'El correo no puede estar vacío.');
-        valid = false;
-      } else if (!validateEmail(email)) {
-        showError('login-email', 'Ingresa un correo electrónico válido.');
-        valid = false;
-      } else {
-        hideError('login-email');
-      }
+async function validateLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const pass  = document.getElementById('login-pass').value;
+  let valid = true;
 
-      if (!pass) {
-        showError('login-pass');
-        valid = false;
-      } else {
-        hideError('login-pass');
-      }
+  if (!email || !validateEmail(email)) { showError('login-email', 'Ingresa un correo válido.'); valid = false; }
+  else { hideError('login-email'); }
+  if (!pass) { showError('login-pass'); valid = false; }
+  else { hideError('login-pass'); }
+  if (!valid) return;
 
-      if (valid) {
-        // Redirección automática requerida al módulo 6.2-mercado
-        window.location.href = 'modulo6.2-mercado';
-      }
-    }
+  try {
+    const resp = await fetch(`${API_AUTH}/api/auth/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "ngrok-skip-browser-warning": "true" },
+      body: JSON.stringify({ email, password: pass })
+    });
+    const data = await resp.json();
+    if (!resp.ok) { showError('login-email', data.detail || 'Error al iniciar sesión.'); return; }
 
-    /* --- VALIDACIÓN: REGISTRO --- */
-    function validateRegister() {
-      const name = document.getElementById('reg-name').value.trim();
-      const email = document.getElementById('reg-email').value.trim();
-      const pass = document.getElementById('reg-pass').value;
-      const pass2 = document.getElementById('reg-pass2').value;
-      const perfil = document.querySelector('input[name="perfil"]:checked');
-      const terms = document.getElementById('reg-terms').checked;
-      
-      let valid = true;
+    // Guardar sesión en localStorage
+    localStorage.setItem("investai_user", JSON.stringify({ nombre: data.nombre, perfil: data.perfil, email: data.email }));
+    window.location.href = 'modulo6.2-mercado.html';
 
-      if (!name) { showError('reg-name'); valid = false; } else { hideError('reg-name'); }
-      
-      if (!email || !validateEmail(email)) { showError('reg-email'); valid = false; } else { hideError('reg-email'); }
-      
-      if (!pass || pass.length < 8) { showError('reg-pass'); valid = false; } else { hideError('reg-pass'); }
-      
-      if (!pass2 || pass !== pass2) { showError('reg-pass2'); valid = false; } else { hideError('reg-pass2'); }
-      
-      if (!perfil) { showError('perfil'); valid = false; } else { hideError('perfil'); }
-      
-      if (!terms) { showError('terms'); valid = false; } else { hideError('terms'); }
+  } catch (err) {
+    showError('login-email', 'No se pudo conectar con el servidor.');
+  }
+}
 
-      if (valid) {
-        // Redirección automática requerida al módulo 6.2-mercado
-        window.location.href = 'modulo6.2-mercado';
-      }
-    }
+async function validateRegister() {
+  const nombre = document.getElementById('reg-name').value.trim();
+  const email  = document.getElementById('reg-email').value.trim();
+  const pass   = document.getElementById('reg-pass').value;
+  const pass2  = document.getElementById('reg-pass2').value;
+  const perfil = document.querySelector('input[name="perfil"]:checked');
+  const terms  = document.getElementById('reg-terms').checked;
+  let valid = true;
+
+  if (!nombre)                        { showError('reg-name');  valid = false; } else { hideError('reg-name'); }
+  if (!email || !validateEmail(email)){ showError('reg-email'); valid = false; } else { hideError('reg-email'); }
+  if (!pass || pass.length < 8)       { showError('reg-pass');  valid = false; } else { hideError('reg-pass'); }
+  if (!pass2 || pass !== pass2)       { showError('reg-pass2'); valid = false; } else { hideError('reg-pass2'); }
+  if (!perfil)                        { showError('perfil');    valid = false; } else { hideError('perfil'); }
+  if (!terms)                         { showError('terms');     valid = false; } else { hideError('terms'); }
+  if (!valid) return;
+
+  try {
+    const resp = await fetch(`${API_AUTH}/api/auth/registro`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "ngrok-skip-browser-warning": "true" },
+      body: JSON.stringify({ nombre, email, password: pass, perfil: perfil.value })
+    });
+    const data = await resp.json();
+    if (!resp.ok) { showError('reg-email', data.detail || 'Error al registrarse.'); return; }
+
+    alert(`✅ ${data.mensaje}\nAhora puedes iniciar sesión.`);
+    showScreen('screen-login');
+
+  } catch (err) {
+    showError('reg-email', 'No se pudo conectar con el servidor.');
+  }
+}
 
     /* --- VALIDACIÓN: RECUPERACIÓN --- */
     function validateRecovery() {
