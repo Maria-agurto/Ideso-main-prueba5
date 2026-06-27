@@ -75,6 +75,7 @@ header {
   background: var(--surface);
   position: sticky; top: 0; z-index: 20;
   gap: 12px;
+  flex-wrap: wrap;
 }
 
 .hd-left {
@@ -112,8 +113,8 @@ header {
   white-space: nowrap;
 }
 
-/* Ticker chip */
-.ticker-chip {
+/* Selector de ticker */
+.ticker-select-wrap {
   display: flex;
   align-items: center;
   gap: 6px;
@@ -121,11 +122,6 @@ header {
   border: 1px solid var(--border-2);
   border-radius: 20px;
   padding: 5px 13px;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  color: var(--lstm);
-  font-weight: 700;
-  letter-spacing: .06em;
   white-space: nowrap;
 }
 
@@ -134,10 +130,41 @@ header {
   background: var(--up);
   border-radius: 50%;
   animation: blink 2s ease-in-out infinite;
+  flex-shrink: 0;
 }
 
 @keyframes blink {
   0%,100% { opacity:1; } 50% { opacity:.3; }
+}
+
+#ticker-select {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--lstm);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 4px;
+}
+
+#ticker-select option {
+  background: var(--surface-2);
+  color: var(--text);
+  font-family: var(--font-mono);
+}
+
+.ticker-name {
+  font-size: 10px;
+  color: var(--muted);
+  white-space: nowrap;
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* ── CUERPO ── */
@@ -458,13 +485,20 @@ footer {
     <span class="module-tag">MÓD 6.4</span>
     <div>
       <div class="hd-title">LSTM Forecasts — Predicción de Precio</div>
-      <div class="hd-sub">Ernesto Investing AI · Regresión continua USD</div>
+      <div class="hd-sub">Ernesto Investing AI · Sector minero-metalúrgico · Regresión continua USD</div>
     </div>
   </div>
 
-  <div class="ticker-chip">
+  <div class="ticker-select-wrap">
     <span class="ticker-dot"></span>
-    AAPL
+    <select id="ticker-select" onchange="cambiarTicker(this.value)">
+      <option value="FSM">FSM</option>
+      <option value="VOLCABC1.LM">VOLCABC1.LM</option>
+      <option value="ABX.TO">ABX.TO</option>
+      <option value="BVN" selected>BVN</option>
+      <option value="BHP">BHP</option>
+    </select>
+    <span class="ticker-name" id="ticker-name">Compañía de Minas Buenaventura S.A.A.</span>
   </div>
 </header>
 
@@ -492,15 +526,9 @@ footer {
     <section>
       <div class="panel-label">Arquitectura LSTM</div>
       <div class="arch-flow">
-        <div class="arch-layer al-lstm">LSTM(64, return_seq=True)</div>
+        <div class="arch-layer al-lstm">LSTM(50, return_seq=True)</div>
         <div class="arch-arrow">↓</div>
-        <div class="arch-layer al-drop">Dropout(0.20)</div>
-        <div class="arch-arrow">↓</div>
-        <div class="arch-layer al-lstm">LSTM(32)</div>
-        <div class="arch-arrow">↓</div>
-        <div class="arch-layer al-drop">Dropout(0.20)</div>
-        <div class="arch-arrow">↓</div>
-        <div class="arch-layer al-dense">Dense(16, relu)</div>
+        <div class="arch-layer al-lstm">LSTM(50)</div>
         <div class="arch-arrow">↓</div>
         <div class="arch-layer al-out">Dense(1, linear)</div>
       </div>
@@ -539,7 +567,7 @@ footer {
       <div class="legend-list">
         <div class="legend-row">
           <div class="leg-line" style="background:var(--real)"></div>
-          Precio real AAPL
+          Precio real (cierre ajustado)
         </div>
         <div class="legend-row">
           <div class="leg-line leg-dashed" style="color:var(--lstm)"></div>
@@ -586,7 +614,7 @@ footer {
 
     <!-- Footer -->
     <footer>
-      <span>LSTM(64)→Drop(0.2)→LSTM(32)→Drop(0.2)→Dense(16,relu)→Dense(1,linear) · ventana=60d · lr=0.001</span>
+      <span>LSTM(50)→LSTM(50)→Dense(1,linear) · ventana=60d · lr=0.001 · proyección autoregresiva</span>
       <span id="footer-ts"></span>
     </footer>
 
@@ -595,13 +623,43 @@ footer {
 
 <script>
 // ═══════════════════════════════════════════════════════════════════
-//  GENERACIÓN DE DATOS SIMULADOS — tendencia alcista realista AAPL
+//  DATOS DE LOS 5 TICKERS DEL SECTOR MINERO (cfr. Cap. 3.5 del informe)
 // ═══════════════════════════════════════════════════════════════════
+
+// Cada ticker tiene su propio precio base, drift y volatilidad diaria
+// aproximados, para que la simulación sea coherente con el activo real.
+const TICKERS = {
+  'FSM': {
+    nombre: 'First Majestic Silver Corp.',
+    s0: 6.20, mu: 0.0007, sigma: 0.026
+  },
+  'VOLCABC1.LM': {
+    nombre: 'Volcan Compañía Minera S.A.A.',
+    s0: 0.85, mu: 0.0004, sigma: 0.030
+  },
+  'ABX.TO': {
+    nombre: 'Barrick Gold Corporation',
+    s0: 21.40, mu: 0.0005, sigma: 0.018
+  },
+  'BVN': {
+    nombre: 'Compañía de Minas Buenaventura S.A.A.',
+    s0: 12.45, mu: 0.0006, sigma: 0.022
+  },
+  'BHP': {
+    nombre: 'BHP Group Limited',
+    s0: 58.30, mu: 0.0004, sigma: 0.015
+  },
+};
+
+let tickerActual = 'BVN';
 
 // Mapa de pasos del slider → días de predicción futura
 const PASO_A_DIAS = [7, 14, 30, 60];
 
 let bandaVisible = true;
+
+// Cache de series históricas por ticker, para no regenerarlas en cada cambio
+const cacheHist = {};
 
 // Normal estándar (Box-Muller)
 function randn() {
@@ -618,12 +676,12 @@ function randn() {
  * @param {number} mu     - drift diario
  * @param {number} sigma  - volatilidad diaria
  */
-function simularPrecios(n = 180, s0 = 165, mu = 0.0006, sigma = 0.014) {
+function simularPrecios(n = 180, s0 = 12, mu = 0.0006, sigma = 0.022) {
   const arr = [s0];
   for (let i = 1; i < n; i++) {
     const ciclo = 0.0003 * Math.sin(i / 22 * Math.PI); // ciclo mensual suave
     const r = mu + ciclo + sigma * randn();
-    arr.push(+(arr[i - 1] * Math.exp(r)).toFixed(3));
+    arr.push(+(arr[i - 1] * Math.exp(r)).toFixed(4));
   }
   return arr;
 }
@@ -635,7 +693,7 @@ function simularPrecios(n = 180, s0 = 165, mu = 0.0006, sigma = 0.014) {
 function simularPredLSTM(reales, lag = 1, noise = 0.006) {
   return reales.map((p, i) => {
     const base = reales[Math.max(0, i - lag)];
-    return +(base * (1 + noise * randn())).toFixed(3);
+    return +(base * (1 + noise * randn())).toFixed(4);
   });
 }
 
@@ -649,7 +707,7 @@ function simularPredARIMA(reales, noise = 0.009) {
   for (let i = 1; i < reales.length; i++) {
     suav.push(alpha * reales[i] + (1 - alpha) * suav[i - 1]);
   }
-  return suav.map(p => +(p * (1 + noise * randn())).toFixed(3));
+  return suav.map(p => +(p * (1 + noise * randn())).toFixed(4));
 }
 
 /**
@@ -690,22 +748,22 @@ function generarFechasFut(n) {
  * Proyecta precios futuros desde el último precio histórico.
  * Devuelve { lstm, arima, upper, lower } para la banda de confianza.
  */
-function proyectarFuturo(ultimoPrecio, n, mu = 0.0006, sigma = 0.014) {
+function proyectarFuturo(ultimoPrecio, n, mu, sigma) {
   const lstm = [ultimoPrecio];
   const arima = [ultimoPrecio];
 
   for (let i = 1; i <= n; i++) {
     // LSTM — levemente más agresivo
     const rL = mu + sigma * randn();
-    lstm.push(+(lstm[i - 1] * Math.exp(rL)).toFixed(3));
+    lstm.push(+(lstm[i - 1] * Math.exp(rL)).toFixed(4));
     // ARIMA-LSTM — más suave/conservador
     const rA = mu * 0.7 + sigma * 0.65 * randn();
-    arima.push(+(arima[i - 1] * Math.exp(rA)).toFixed(3));
+    arima.push(+(arima[i - 1] * Math.exp(rA)).toFixed(4));
   }
 
   // Banda de confianza: ±2σ acumulado (se ensancha con el tiempo)
-  const upper = lstm.map((p, i) => +(p * (1 + 2 * sigma * Math.sqrt(i + 1))).toFixed(3));
-  const lower = lstm.map((p, i) => +(p * (1 - 2 * sigma * Math.sqrt(i + 1))).toFixed(3));
+  const upper = lstm.map((p, i) => +(p * (1 + 2 * sigma * Math.sqrt(i + 1))).toFixed(4));
+  const lower = lstm.map((p, i) => +(p * (1 - 2 * sigma * Math.sqrt(i + 1))).toFixed(4));
 
   return { lstm: lstm.slice(1), arima: arima.slice(1), upper: upper.slice(1), lower: lower.slice(1) };
 }
@@ -739,20 +797,35 @@ function calcularMetricas(reales, predicciones) {
 // ═══════════════════════════════════════════════════════════════════
 
 const N_HIST = 180;
+const histFechas = generarFechasHist(N_HIST);
 
-// Generamos una vez los datos históricos (estables entre actualizaciones)
-const histPrecios  = simularPrecios(N_HIST);
-const histFechas   = generarFechasHist(N_HIST);
-const predLSTM_h   = simularPredLSTM(histPrecios);
-const predARIMA_h  = simularPredARIMA(histPrecios);
+/**
+ * Genera (o recupera de caché) las series históricas para un ticker.
+ */
+function obtenerDatosHist(ticker) {
+  if (cacheHist[ticker]) return cacheHist[ticker];
 
-// Calculamos métricas y las pintamos
-const metricas = calcularMetricas(histPrecios, predLSTM_h);
+  const cfg = TICKERS[ticker];
+  const precios = simularPrecios(N_HIST, cfg.s0, cfg.mu, cfg.sigma);
+  const predLSTM = simularPredLSTM(precios);
+  const predARIMA = simularPredARIMA(precios);
+  const metricas = calcularMetricas(precios, predLSTM);
 
-document.getElementById('m-rmse-usd').textContent = `$${metricas.rmse.toFixed(2)}`;
-document.getElementById('m-rmse-pct').textContent = `${metricas.rmsePct.toFixed(2)}%`;
-document.getElementById('m-mae').textContent      = `$${metricas.mae.toFixed(2)}`;
-document.getElementById('m-r2').textContent       = metricas.r2.toFixed(4);
+  cacheHist[ticker] = { precios, predLSTM, predARIMA, metricas, cfg };
+  return cacheHist[ticker];
+}
+
+/**
+ * Actualiza el panel de métricas y el nombre del ticker en cabecera.
+ */
+function actualizarPanelInfo(ticker) {
+  const datos = obtenerDatosHist(ticker);
+  document.getElementById('m-rmse-usd').textContent = `$${datos.metricas.rmse.toFixed(2)}`;
+  document.getElementById('m-rmse-pct').textContent = `${datos.metricas.rmsePct.toFixed(2)}%`;
+  document.getElementById('m-mae').textContent      = `$${datos.metricas.mae.toFixed(2)}`;
+  document.getElementById('m-r2').textContent       = datos.metricas.r2.toFixed(4);
+  document.getElementById('ticker-name').textContent = datos.cfg.nombre;
+}
 
 // Timestamp en footer
 document.getElementById('footer-ts').textContent =
@@ -767,9 +840,12 @@ document.getElementById('footer-ts').textContent =
  * @param {number} diasFut  - número de días futuros a proyectar
  */
 function renderGrafico(diasFut) {
+  const datos = obtenerDatosHist(tickerActual);
+  const { precios: histPrecios, predLSTM: predLSTM_h, predARIMA: predARIMA_h, cfg } = datos;
+
   const futFechas  = generarFechasFut(diasFut);
   const ultimo     = histPrecios[histPrecios.length - 1];
-  const futProj    = proyectarFuturo(ultimo, diasFut);
+  const futProj    = proyectarFuturo(ultimo, diasFut, cfg.mu, cfg.sigma);
 
   // Fecha de unión (último histórico)
   const fechaCorte = histFechas[histFechas.length - 1];
@@ -923,7 +999,7 @@ function renderGrafico(diasFut) {
     displayModeBar: true,
     modeBarButtonsToRemove: ['select2d', 'lasso2d', 'toggleSpikelines'],
     displaylogo: false,
-    toImageButtonOptions: { format: 'png', filename: 'lstm_forecast_aapl' },
+    toImageButtonOptions: { format: 'png', filename: `lstm_forecast_${tickerActual.replace(/\W+/g, '_')}` },
   };
 
   Plotly.react('plotDiv',
@@ -948,6 +1024,17 @@ function actualizarDias(paso) {
 }
 
 /**
+ * Cambia el ticker seleccionado y refresca panel de métricas + gráfico.
+ * @param {string} ticker - símbolo seleccionado en el <select>
+ */
+function cambiarTicker(ticker) {
+  tickerActual = ticker;
+  actualizarPanelInfo(ticker);
+  const pasoActual = +document.getElementById('dias-slider').value;
+  renderGrafico(PASO_A_DIAS[pasoActual]);
+}
+
+/**
  * Activa/desactiva la banda de confianza.
  */
 function toggleBanda() {
@@ -962,6 +1049,7 @@ function toggleBanda() {
 // ═══════════════════════════════════════════════════════════════════
 //  INIT
 // ═══════════════════════════════════════════════════════════════════
+actualizarPanelInfo(tickerActual);
 renderGrafico(30); // valor por defecto del slider (paso 2 → 30 días)
 
 /* __INVESTAI_NAV_JS__ */
