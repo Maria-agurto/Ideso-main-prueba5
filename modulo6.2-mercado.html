@@ -535,18 +535,12 @@
             <div class="field-label">Añadir Ticker</div>
             <select class="styled-select" id="ticker-select" aria-label="Seleccionar ticker">
               <option value="">— Seleccionar —</option>
-              <optgroup label="Renta Variable">
-                <option value="AAPL">AAPL — Apple Inc.</option>
-                <option value="MSFT">MSFT — Microsoft Corp.</option>
-                <option value="GOOGL">GOOGL — Alphabet Inc.</option>
-                <option value="AMZN">AMZN — Amazon.com</option>
-                <option value="NVDA">NVDA — NVIDIA Corp.</option>
-                <option value="TSLA">TSLA — Tesla Inc.</option>
-              </optgroup>
-              <optgroup label="Criptomonedas">
-                <option value="BTC">BTC — Bitcoin</option>
-                <option value="ETH">ETH — Ethereum</option>
-                <option value="SOL">SOL — Solana</option>
+              <optgroup label="Sector Minero — Perú">
+                <option value="FSM">FSM — Fortuna Silver Mines</option>
+                <option value="VOLCABC1.LM">VOLCABC1.LM — Volcán Cía. Minera</option>
+                <option value="ABX.TO">ABX.TO — Barrick Gold</option>
+                <option value="BVN">BVN — Cía. de Minas Buenaventura</option>
+                <option value="BHP">BHP — BHP Group</option>
               </optgroup>
             </select>
             <div class="ticker-chips" id="ticker-chips" role="list" aria-label="Tickers seleccionados"></div>
@@ -644,15 +638,15 @@
 
   <script>
     // --- ESTADO GLOBAL ---
-    let tickersSeleccionados = new Set(['AAPL', 'BTC']);
+    let tickersSeleccionados = new Set(['FSM', 'BVN']);
     let isIngesting = false;
     let ingestInterval = null;
-    let selectedChartAsset = 'AAPL';
+    let selectedChartAsset = 'FSM';
     let totalRows = 0;
     let totalErrors = 0;
 
     // Precios y simulación base
-    const basePrices = { AAPL: 175.50, MSFT: 420.20, GOOGL: 150.10, AMZN: 178.00, NVDA: 875.00, TSLA: 170.30, BTC: 65000, ETH: 3500, SOL: 140 };
+    const basePrices = { FSM: 6.50, 'VOLCABC1.LM': 0.45, 'ABX.TO': 18.20, BVN: 12.80, BHP: 48.50 };
     let chartDataStore = {};
 
     // --- RELOJ ---
